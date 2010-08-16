@@ -13,7 +13,7 @@ class UiLink < SsbeModel
     def const_missing(name)
       if link = self.detect { |l| l.title == name.to_s }
         const_set(name, link)
-      elsif ! (links = self.select { |l| l.category == name.to_s }).empty?
+      elsif ! (links = self.select { |l| l.category == name.to_s.downcase }).empty?
         const_set(name, links.sort_by { |l| l.title })
       else
         # No uilinks found with title "name" or in category "name"
