@@ -37,6 +37,7 @@ class MetricFilter < SsbeModel
   def criteria_attributes=(attributes)
     criteria = []
     attributes.each do |i, values|
+      next if values[:_delete] && values[:_delete].to_i == 1
       criteria << Criterion.new(values.merge(:id => i))
     end
 
