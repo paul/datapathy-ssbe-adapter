@@ -3,7 +3,7 @@ class MetricFilter < SsbeModel
   service_type  :measurements
   resource_name :AllMetricFilters
 
-  persists :purpose, :any_or_all, :criteria, :client_href, :metrics_href
+  persists :purpose, :any_or_all, :criteria, :criteria_href, :client_href, :metrics_href
 
   validates_presence_of :client_href
   validates_presence_of :purpose, :any_or_all
