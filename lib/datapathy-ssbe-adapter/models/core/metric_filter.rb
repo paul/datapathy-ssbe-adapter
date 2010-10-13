@@ -62,5 +62,48 @@ class MetricFilter < SsbeModel
     end
   end
 
+  class Criterion
+    include ActiveModel::Validations
+
+    attr_accessor :id, :target, :comparison, :pattern
+
+    attr_accessor :_delete # Virtual attribute for form remove
+
+    validates_presence_of :target, :comparison
+    validates_presence_of :pattern, :message => "Pattern is required"
+    validate :comparison_valid_for_target
+
+    def initialize(attrs = {})
+      attrs.each do |k,v|
+        send(:"#{k}=", v)
+      end
+    end
+
+    def to_json
+      {
+        :target => target,
+        :comparison => comparison,
+        :pattern => pattern
+      }.to_json
+    end
+
+    def valid_comparisons
+      MetricFilter.targets.detect { |comparisons|
+        comparisons["target"] == target
+      }["valid_comparisons"]
+    end
+
+    def new_record?; false; end
+    def persisted?;  false;  end
+
+    protected
+
+    def comparison_valid_for_target
+      unless valid_comparisons.include?(comparison)
+        errors.add(:comparison, "Comparison is applicable to this target")
+      end
+    end
+
+  end
 
 end

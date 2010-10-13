@@ -19,10 +19,6 @@ class SsbeModel
     save
   end
 
-  def persisted?
-    !!href
-  end
-
   class << self
 
     def service_type(service_type = nil)
