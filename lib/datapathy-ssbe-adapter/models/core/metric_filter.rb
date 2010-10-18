@@ -99,7 +99,7 @@ class MetricFilter < SsbeModel
     protected
 
     def comparison_valid_for_target
-      unless valid_comparisons.include?(comparison)
+      if !target.blank? && !valid_comparisons.include?(comparison)
         errors.add(:comparison, "Comparison is applicable to this target")
       end
     end
