@@ -8,6 +8,8 @@ class MetricFilter < SsbeModel
   validates_presence_of :client_href
   validates_presence_of :purpose, :any_or_all
   validates_inclusion_of :any_or_all, :in => ["any", "all"]
+
+  validates_presence_of :criteria
   validate :valid_criteria
 
   def client=(client)
