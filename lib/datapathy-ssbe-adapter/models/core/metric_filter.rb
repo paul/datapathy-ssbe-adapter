@@ -71,8 +71,10 @@ class MetricFilter < SsbeModel
 
     attr_accessor :_delete # Virtual attribute for form remove
 
-    validates_presence_of :target, :comparison
-    validates_presence_of :pattern, :message => "Pattern is required"
+    validates_presence_of :target,
+                          :comparison,
+                          :pattern,
+                          :message => "is required"
     validate :comparison_valid_for_target
 
     def initialize(attrs = {})
