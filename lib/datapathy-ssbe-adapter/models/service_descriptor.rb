@@ -4,10 +4,18 @@ class ServiceDescriptor < SsbeModel
   persists :service_type
 
   def self.[](name)
+    if @services && service = @services[name]
+      return service
+    end
+
+    @services ||= {}
+
     service_type = ServiceIdentifiers[name].service_type
-    self.detect { |m|
+    result = self.detect { |m|
       m.service_type == service_type
     }
+
+    @services[name] = result
   end
 
   def name
@@ -23,7 +31,13 @@ class ServiceDescriptor < SsbeModel
   end
 
   def resource_for(resource_name)
-    resources.detect { |r| r.name == resource_name.to_s }
+    if @resources && resource = @resources[resource_name]
+      return resource
+    end
+
+    @resources ||= {}
+    result = resources.detect { |r| r.name == resource_name.to_s }
+    @resources[resource_name] = result
   end
 
   def self.register(name, href)
