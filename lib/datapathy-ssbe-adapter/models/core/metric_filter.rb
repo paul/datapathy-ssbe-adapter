@@ -50,18 +50,18 @@ class MetricFilter < SsbeModel
     @targets ||= JSON.parse(targets_json).with_indifferent_access[:items]
   end
 
-  def self.targets_json
-    url = ServiceDescriptor[:measurements].resource_for("AllMetricFilterTargets").href
-    response = adapter.http.resource(url).get(:accept => ServiceDescriptor::ServiceIdentifiers[:measurements].mime_type)
-    response.body
-  end
-
   protected
 
   def valid_criteria
     criteria.each do |c|
       errors.add(:criteria, :invalid) unless c.valid?
     end
+  end
+
+  def self.targets_json
+    url = ServiceDescriptor[:measurements].resource_for("AllMetricFilterTargets").href
+    response = adapter.http.resource(url).get(:accept => ServiceDescriptor::ServiceIdentifiers[:measurements].mime_type)
+    response.body
   end
 
   class Criterion
@@ -97,6 +97,14 @@ class MetricFilter < SsbeModel
       }["valid_comparisons"]
     end
 
+    def human_target
+      HUMAN_TARGETS[target]
+    end
+
+    def human_comparison
+      comparison.titlecase
+    end
+
     def new_record?; false; end
     def persisted?;  false;  end
 
@@ -104,8 +112,14 @@ class MetricFilter < SsbeModel
 
     def comparison_valid_for_target
       if !target.blank? && !valid_comparisons.include?(comparison)
-        errors.add(:comparison, "Comparison is applicable to this target")
+        errors.add(:comparison, "\"#{human_comparison}\" is not valid for #{human_target}")
       end
+    end
+
+    HUMAN_TARGETS = {}.tap do |targets|
+      MetricFilter.targets.each { |target|
+        targets[target[:target]] = target[:name].split('(').first
+      }
     end
 
   end
