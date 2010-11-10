@@ -19,6 +19,10 @@ class SsbeModel
     save
   end
 
+  def to_sql(formatter = nil)
+    href.to_sql(formatter)
+  end
+
   class << self
 
     def service_type(service_type = nil)

@@ -21,5 +21,4 @@ class Client < SsbeModel
     @cache[href]
   end
 
-
 end
